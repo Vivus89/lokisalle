@@ -167,8 +167,8 @@ $id_membre = (isset($membre_actuel)) ? $membre_actuel['id_membre'] : '';
 		<option <?= ($civilite == '1') ? 'selected' : '' ?> value="1">Admin</option>
 	</select><br/>
 	
-	<!--<label>Date d'enregistrement </label>
-	<input type="text" name="date_enregistrement" value="<?= $date_enregistrement ?>"/><br/>-->
+	<label>Date d'enregistrement </label>
+	<input type="text" name="date_enregistrement" value="<?= $date_enregistrement ?>"/><br/>
 
 	<input type="submit" value="<?= $action ?>"/><br/>
 

@@ -43,7 +43,7 @@ if($_POST){
 		}
 		else{ // Tout est OK le pseudo est disponible on peut enregistrer le membre. Notons que nous aurions du vérifer la disponibilité de l'adresse email. En sachant que ce serait certainement une perte de MDP.
 
-		$resultat = $pdo -> prepare("INSERT INTO membre (pseudo, mdp, nom, prenom, email, civilite, statut) VALUES (:pseudo, :mdp, :nom, :prenom, :email, :civilite, 0)");
+		$resultat = $pdo -> prepare("INSERT INTO membre (pseudo, mdp, nom, prenom, email, civilite, statut, date_enregistrement) VALUES (:pseudo, :mdp, :nom, :prenom, :email, :civilite, 0, NOW())");
 
 		//STR
 		$resultat -> bindParam(':pseudo', $_POST['pseudo'], PDO::PARAM_STR);
