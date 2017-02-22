@@ -31,11 +31,6 @@ require_once('inc/header.inc.php');
 		</ul>
 	</div>
 	<div class="profil_adresse">
-		<ul>
-			<li>Adresse : <b><?= $adresse ?></b></li>
-			<li>Code Postal : <b><?= $code_postal ?></b></li>
-			<li>Ville : <b><?= $ville ?></b></li>
-		</ul>
 	</div>
 </div>
 
