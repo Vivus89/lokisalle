@@ -9,17 +9,17 @@ if(!userAdmin()){
 // Ajouter et modifier un membre
 if($_POST){
 
-	//debug($_POST);
+	debug($_POST);
 
 	if(isset($_POST['mdp']) && !empty($_POST['mdp'])){
 
 		if(isset($_GET['action']) && $_GET['action'] == 'modifier'){
-			$resultat = $pdo -> prepare("REPLACE INTO membre (id_membre, pseudo, mdp, nom, prenom, email, civilite, ville, code_postal, adresse, statut) VALUES (:id_membre, :pseudo, :mdp, :nom, :prenom, :email, :civilite, :ville, :code_postal, :adresse, :statut)");
+			$resultat = $pdo -> prepare("REPLACE INTO membre (id_membre, pseudo, mdp, nom, prenom, email, civilite, statut, date_enregistrement ) VALUES (:id_membre, :pseudo, :mdp, :nom, :prenom, :email, :civilite, :statut, :date_enregistrement)");
 
 			$resultat -> bindParam(':id_membre', $_POST['id_membre'], PDO::PARAM_INT);
 		}
 		else{
-			$resultat = $pdo -> prepare("REPLACE INTO membre (pseudo, mdp, nom, prenom, email, civilite, ville, code_postal, adresse, statut) VALUES (:pseudo, :mdp, :nom, :prenom, :email, :civilite, :ville, :code_postal, :adresse, :statut)");
+			$resultat = $pdo -> prepare("REPLACE INTO membre (pseudo, mdp, nom, prenom, email, civilite, statut, date_enregistrement ) VALUES (:pseudo, :mdp, :nom, :prenom, :email, :civilite, :statut, :date_enregistrement)");
 		}
 
 		//STR
@@ -29,13 +29,11 @@ if($_POST){
 		$resultat -> bindParam(':nom', $_POST['nom'], PDO::PARAM_STR);
 		$resultat -> bindParam(':prenom', $_POST['prenom'], PDO::PARAM_STR);
 		$resultat -> bindParam(':email', $_POST['email'], PDO::PARAM_STR);
-		$resultat -> bindParam(':civilite', $_POST['civilite'], PDO::PARAM_STR);
-		$resultat -> bindParam(':ville', $_POST['ville'], PDO::PARAM_STR);
-		$resultat -> bindParam(':statut', $_POST['statut'], PDO::PARAM_STR);
-		$resultat -> bindParam(':adresse', $_POST['adresse'], PDO::PARAM_STR);
+		$resultat -> bindParam(':civilite', $_POST['civilite'], PDO::PARAM_STR);		
+		$resultat -> bindParam(':date_enregistrement', $_POST['date_enregistrement'], PDO::PARAM_STR);
 
 		//INT
-		$resultat -> bindParam(':code_postal', $_POST['code_postal'], PDO::PARAM_INT);
+		 $resultat -> bindParam(':statut', $_POST['statut'], PDO::PARAM_INT);
 
 		if($resultat -> execute()){
 			$_GET['action'] = 'affichage';
@@ -60,11 +58,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'supprimer'){ // SI une
 
 		if($resultat -> rowCount() > 0){
 
-			$resultat = $pdo -> exec("DELETE FROM membre WHERE id_membre = $membre[id_membre]");
+			$resultat = $pdo -> exec("DELETE FROM membre WHERE id_membre = $_GET[id_membre]");
 
 			if($resultat != FALSE){
 				$_GET['action'] = 'affichage';
-				$msg .= '<div class="validation">Le membre N°' . $membre['id_membre'] . ' a bien été supprimé !</div>';
+				$msg .= '<div class="validation">Le membre N°' . $_GET['id_membre'] . ' a bien été supprimé !</div>';
 			}
 		}
 	}
@@ -128,9 +126,7 @@ $prenom = (isset($membre_actuel)) ? $membre_actuel['prenom'] : '';
 $email = (isset($membre_actuel)) ? $membre_actuel['email'] : '';
 $civilite = (isset($membre_actuel)) ? $membre_actuel['civilite'] : '';
 $statut = (isset($membre_actuel)) ? $membre_actuel['statut'] : '';
-$ville = (isset($membre_actuel)) ? $membre_actuel['ville'] : '';
-$adresse = (isset($membre_actuel)) ? $membre_actuel['adresse'] : '';
-$code_postal = (isset($membre_actuel)) ? $membre_actuel['code_postal'] : '';
+$ville = (isset($membre_actuel)) ? $membre_actuel['date_enregistrement'] : '';
 $action = (isset($membre_actuel)) ? 'Modifier' : 'Ajouter';
 $id_membre = (isset($membre_actuel)) ? $membre_actuel['id_membre'] : '';
 ?>
@@ -152,7 +148,7 @@ $id_membre = (isset($membre_actuel)) ? $membre_actuel['id_membre'] : '';
 	<input type="text" name="nom" value="<?= $nom ?>"/><br/>
 
 	<label>Prénom: </label>
-	<textarea name="prenom"><?= $prenom ?></textarea><br/>
+	<input type="text" name="prenom" value="<?= $prenom ?>"/><br/>
 
 	<label>Email: </label>
 	<input type="text" name="email" value="<?= $email ?>"/><br/>
@@ -164,23 +160,15 @@ $id_membre = (isset($membre_actuel)) ? $membre_actuel['id_membre'] : '';
 		<option <?= ($civilite == 'f') ? 'selected' : '' ?> value="f">Femme</option>
 	</select><br/>
 
-
-	<label>Ville: </label>
-	<input type="text" name="ville" value="<?= $ville ?>"/><br/>
-
-	<label>Code Postal : </label>
-	<input type="text" name="code_postal" value="<?= $code_postal ?>"/><br/>
-
-	<label>Adresse : </label>
-	<input type="text" name="adresse" value="<?= $adresse ?>"/><br/>
-
 	<label>Statut: </label>
 	<select name="statut">
 		<option>-- Selectionnez --</option>
 		<option <?= ($statut == '0') ? 'selected' : '' ?> value="0">Membre</option>
 		<option <?= ($civilite == '1') ? 'selected' : '' ?> value="1">Admin</option>
 	</select><br/>
-
+	
+	<!--<label>Date d'enregistrement </label>
+	<input type="text" name="date_enregistrement" value="<?= $date_enregistrement ?>"/><br/>-->
 
 	<input type="submit" value="<?= $action ?>"/><br/>
 
