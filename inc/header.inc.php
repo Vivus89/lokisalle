@@ -8,7 +8,7 @@
         <header>
 			<div class="conteneur">                      
 				<span>
-					<a href="" title="Mon Site">MonSite.com</a>
+					<a href="" title="Lokisalle">Lokisalle</a>
                 </span>
 				<nav>
 				<?php if(userConnecte()):?>
