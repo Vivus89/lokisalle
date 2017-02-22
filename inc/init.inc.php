@@ -10,7 +10,7 @@ $pdo = new PDO('mysql:host=localhost;dbname=lokisalle', 'root', '', array(
 session_start();
 
 // CHEMIN
-define('RACINE_SITE', '/lokisalle');
+define('RACINE_SITE', '/lokisalle/');
 
 // VARIABLES
 $msg = '';
