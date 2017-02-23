@@ -56,10 +56,10 @@ require_once('inc/header.inc.php');
 <h1>Connexion</h1>
 <form method="post" action="">
 	<? = $msg ?>
-	<label>Pseudo :</label>
+	<label>Pseudo :</label><br/>
 	<input type="text" name="pseudo"/><br/><br/>
 
-	<label>Mot de passe :</label>
+	<label>Mot de passe :</label><br/>
 	<input type="password" name="mdp"/><br/>
 
 	<input type="submit" value="Connexion" />

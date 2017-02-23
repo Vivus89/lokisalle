@@ -18,13 +18,13 @@
 				<nav class="navbar navbar-default">
           <div class="container-fluid">
 				<?php if(userConnecte()):?>
+					<a <?= ($page == 'Accueil') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>index.php">Accueil</a>
 					<a <?= ($page == 'Profil') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>profil.php">Profil</a>
-					<a <?= ($page == 'Salle') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>salle.php">Salle</a>
 					<a <?= ($page == 'Panier') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>panier.php">Panier<?php if(quantitePanier()) : ?><span class="bulle"><?= quantitePanier()?></span><?php endif ?></a>
 					<a href="<?= RACINE_SITE ?>connexion.php?action=deconnexion">Deconnexion</a>
 				<?php else : ?>
-					<a <?= ($page == 'Fiche Produit') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>fiche_produit.php">Fiche Produit</a>
 					<a <?= ($page == 'Accueil') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>index.php">Accueil</a>
+					<a <?= ($page == 'Fiche Produit') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>fiche_produit.php">Fiche Produit</a>
 					<a <?= ($page == 'Inscription') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>inscription.php">Inscription</a>
 					<a <?= ($page == 'Salle') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>salle.php">Salle</a>
 					<a <?= ($page == 'Panier') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>panier.php">Panier<?php if(quantitePanier()) : ?><span class="bulle"><?= quantitePanier()?></span><?php endif ?></a>
