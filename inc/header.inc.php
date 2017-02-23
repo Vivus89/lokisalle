@@ -35,6 +35,7 @@
 					<a <?= ($page == 'Gestion Salle') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>admin/gestion_salle.php">Gestion Salle</a>
 					<a <?= ($page == 'Gestion Membres') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>admin/gestion_membres.php">Gestion Membres</a>
 					<a <?= ($page == 'Gestion Commandes') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>admin/gestion_commandes.php">Gestion Commandes</a>
+					<a <?= ($page == 'Gestion Produit') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>admin/gestion_commandes.php">Gestion Produit</a>
 				<?php endif; ?>
       </div>
 				</nav>

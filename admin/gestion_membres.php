@@ -138,37 +138,36 @@ $id_membre = (isset($membre_actuel)) ? $membre_actuel['id_membre'] : '';
 	<input type="hidden" name="id_membre" value="<?= $id_membre ?>" />
 
 
-	<label>Pseudo : </label>
+	<label>Pseudo : </label><br/>
 	<input type="text" name="pseudo" value="<?= $pseudo ?>" /><br/>
 
-	<label>Mot de passe: </label>
+	<label>Mot de passe: </label><br/><br/>
 	<input type="text" name="mdp"/><br/>
 
-	<label>Nom: </label>
+	<label>Nom: </label><br/><br/>
 	<input type="text" name="nom" value="<?= $nom ?>"/><br/>
 
-	<label>Prénom: </label>
+	<label>Prénom: </label><br/><br/>
 	<input type="text" name="prenom" value="<?= $prenom ?>"/><br/>
 
-	<label>Email: </label>
+	<label>Email: </label><br/><br/>
 	<input type="text" name="email" value="<?= $email ?>"/><br/>
 
-	<label>Civilite: </label>
+	<label>Civilite: </label><br/><br/>
 	<select name="civilite">
 		<option>-- Selectionnez --</option>
 		<option <?= ($civilite == 'm') ? 'selected' : '' ?> value="m">Homme</option>
 		<option <?= ($civilite == 'f') ? 'selected' : '' ?> value="f">Femme</option>
 	</select><br/>
 
-	<label>Statut: </label>
+	<label>Statut: </label><br/><br/>
 	<select name="statut">
 		<option>-- Selectionnez --</option>
 		<option <?= ($statut == '0') ? 'selected' : '' ?> value="0">Membre</option>
 		<option <?= ($civilite == '1') ? 'selected' : '' ?> value="1">Admin</option>
 	</select><br/>
 	
-	<label>Date d'enregistrement </label>
-	<input type="text" name="date_enregistrement" value="<?= $date_enregistrement ?>"/><br/>
+	<?php $date_enregistrement ?>
 
 	<input type="submit" value="<?= $action ?>"/><br/>
 
