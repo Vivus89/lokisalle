@@ -57,12 +57,13 @@ require_once('inc/header.inc.php');
 <form method="post" action="">
 	<? = $msg ?>
 	<label>Pseudo :</label><br/>
-	<input type="text" name="pseudo"/><br/><br/>
+	<input type="text" name="pseudo"/><br/><br/><br/><br/>
 
 	<label>Mot de passe :</label><br/>
 	<input type="password" name="mdp"/><br/>
 
-	<input type="submit" value="Connexion" />
+
+	<br/><br/><br/><br/><br/><input type="submit" value="Connexion" />
 </form>
 <?php
 require_once('inc/footer.inc.php');
