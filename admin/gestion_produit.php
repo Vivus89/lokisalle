@@ -42,19 +42,28 @@ if($_POST){
 	// Depuis SQL 5.7, dans une requête REPLACE on ne peux plus mettre la clé primaire vide ou NULL. ON doit donc faire une requête pour l'ajout et une requete pour la modif. d'où le if/else ci-desous.
 
 	if(isset($_GET['action']) && $_GET['action'] == 'modifier'){
-		$resultat = $pdo -> prepare("REPLACE INTO salle (id_produit, date_arrivee , date_depart, id_salle, prix, etat) VALUES (:id_produit, :date_arrivee, :date_depart, id_salle :prix, :etat)");
+		$resultat = $pdo -> prepare("REPLACE INTO produit (id_produit, date_arrivee , date_depart, id_salle, prix, etat) VALUES (:id_produit, :date_arrivee, :date_depart, :id_salle, :prix, :etat)");
 
 		$resultat -> bindParam(':id_produit', $_POST['id_produit'], PDO::PARAM_INT);
 	}
 	else{
-		$resultat = $pdo -> prepare("INSERT INTO salle ( date_arrivee , date_depart, id_salle, prix, etat) VALUES (:date_arrivee, :date_depart, id_salle :prix, :etat)");
+		$resultat = $pdo -> prepare("INSERT INTO produit ( date_arrivee , date_depart, id_salle, prix, etat) VALUES (:date_arrivee, :date_depart, :id_salle, :prix, :etat)");
 	}// !!!!!!! FERMETURE DU ELSE !!!!!!!!
+if(!empty($_POST['date_arrivee'])) {
+	$date = new DateTime($_POST['date_arrivee']);
+	$date =  $date->format('Y-m-d H:i:s');
+}
+
+if(!empty($_POST['date_depart'])) {
+	$date1 = new DateTime($_POST['date_depart']);
+	$date1 =  $date1->format('Y-m-d H:i:s');
+}
 
 	//STR
-	$resultat -> bindParam(':date_arrivee', $_POST['date_arrivee'], PDO::PARAM_STR);
-	$resultat -> bindParam(':date_depart', $_POST['date_depart'], PDO::PARAM_STR);
-	$resultat -> bindParam(':id_salle', $_POST['id_salle'], PDO::PARAM_STR);
-	$resultat -> bindParam(':prix', $_POST['prix'], PDO::PARAM_STR);
+	$resultat -> bindParam(':date_arrivee', $date, PDO::PARAM_STR);
+	$resultat -> bindParam(':date_depart', $date1, PDO::PARAM_STR);
+	$resultat -> bindParam(':id_salle', $_POST['salle'], PDO::PARAM_INT);
+	$resultat -> bindParam(':prix', $_POST['prix'], PDO::PARAM_INT);
 	$resultat -> bindParam(':etat', $_POST['etat'], PDO::PARAM_STR);
 
 
@@ -199,7 +208,7 @@ $id_salle = (isset($produit_actuel)) ? $produit_actuel['id_salle'] : '';
     <label for="datetime">Date arrivée </label>
     <div class="input-group">
       <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span><span class="glyphicon glyphicon-time"></span></span>
-      <input class="form-control datetime" id="datetime" type="text" value="" >
+      <input class="form-control datetime" name="date_arrivee" id="datetime" type="text" value="" >
     </div>
     </div>
   </div>
@@ -209,7 +218,7 @@ $id_salle = (isset($produit_actuel)) ? $produit_actuel['id_salle'] : '';
       <label for="datetime1"> Date départ </label>
       <div class="input-group">
         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span><span class="glyphicon glyphicon-time"></span></span>
-        <input class="form-control datetime" id="datetime1" type="text" value="" >
+        <input class="form-control datetime" name="date_depart" id="datetime1" type="text" value="" >
       </div>
     </div>
     </div>
@@ -255,6 +264,18 @@ while ($salle = $resultat->fetch())
 <br/>
 <br/>
 
+<div class="form-group">
+	<div class="col-sm-offset-3 col-sm-4">
+<label>etat: </label>
+<select name="etat" class="form-control">
+	<option>-- Selectionnez --</option>
+	<option <?= ($etat == 'libre') ? 'selected' : '' ?> value="libre">libre</option>
+	<option <?= ($etat == 'occupation') ? 'selected' : '' ?> value="occupation">occupation</option>
+
+</select>
+</div>
+</div>
+<br/>
 <div class="form-group">
 
 	<input type="submit" class="btn btn-primary" value="<?= $action ?>"/>
