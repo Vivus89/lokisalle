@@ -143,7 +143,7 @@ require_once('../inc/header.inc.php');
 ?>
 <!-- Contenu de la page -->
 
-<h1>Gestion de la boutique</h1>
+<h1>Gestion des salles</h1>
 <ul>
 	<!-- Les deux liens ci-dessous (sous-menu) permettent de lancer 2 actions : Affichage de tous les produits et Affichage du formulaire d'ajout de produit. -->
 	<li><a href="?action=affichage">Afficher les salles</a></li>
