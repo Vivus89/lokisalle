@@ -143,7 +143,7 @@ require_once('../inc/header.inc.php');
 ?>
 <!-- Contenu de la page -->
 
-<h1>Gestion de la boutique</h1>
+<h1>Gestion des Salles </h1>
 <ul>
 	<!-- Les deux liens ci-dessous (sous-menu) permettent de lancer 2 actions : Affichage de tous les produits et Affichage du formulaire d'ajout de produit. -->
 	<li><a href="?action=affichage">Afficher les salles</a></li>
@@ -170,7 +170,7 @@ if(isset($_GET['id_salle']) && is_numeric($_GET['id_salle'])){ // Dans le cas o�
 // Les lignes ci-dessous servent simplement à éviter de mettre trop de PHP dans notre formulaire.
 $titre = (isset($salle_actuel)) ? $salle_actuel['titre'] : '';
 $description = (isset($salle_actuel)) ? $salle_actuel['description'] : '';
-//$photo = (isset(salle_actuel)) ? salle_actuel['photo'] : '';
+$photo = (isset($salle_actuel)) ? $salle_actuel['photo'] : '';
 $pays = (isset($salle_actuel)) ? $salle_actuel['pays'] : '';
 $ville = (isset($salle_actuel)) ? $salle_actuel['ville'] : '';
 $adresse = (isset($salle_actuel)) ? $salle_actuel['adresse'] : '';
@@ -270,7 +270,39 @@ $id_salle = (isset($salle_actuel)) ? $salle_actuel['id_salle'] : '';
 	<br/>
 </div>
 </form>
+<script>
+	var champsPays =  document.getElementById("pays")
+	champsPays.addEventListener("change",ajax);
 
+	function ajax(){
+		var xhttp = new XMLHttpRequest(); // instanciation de l'objet XMLHttpRequest.
+			var file = "ajax.php";
+			var valeur = champsPays.options[champsPays.selectedIndex].value;
+			console.log(valeur);
+			var parametres = "pays="+valeur;
+			console.log(parametres);
+
+		xhttp.open("POST",file,true);
+		xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded"); // cette ligne est obligatoire en mode post.
+		xhttp.onreadystatechange = function (){
+
+
+			console.log(xhttp);
+			console.log(xhttp.responseText);
+			if(xhttp.readyState==4 && xhttp.status ==200 ){
+
+				console.log(xhttp.responseText);
+
+				var result = JSON.parse(xhttp.responseText);
+				console.log(result);
+				document.getElementById("ville").innerHTML=result.resultat;
+			}
+
+		}
+		xhttp.send(parametres);
+	}
+
+</script>
 <?php endif;?>
 
 <?php
