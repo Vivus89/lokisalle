@@ -12,6 +12,14 @@ $categorie = $resultat -> fetchAll(PDO::FETCH_ASSOC);
 $resultat = $pdo -> query("SELECT DISTINCT ville FROM salle"); 
 $ville = $resultat -> fetchAll(PDO::FETCH_ASSOC); 
 
+//$req = $pdo -> query(
+//"SELECT * FROM salle 
+//LEFT JOIN produit 
+//ON salle.id_salle = produit.id_salle"
+//);
+ //$resultat = $req ;
+ // $produits = $resultat -> fetchAll(PDO::FETCH_ASSOC);
+
 // Traitement pour récupérer tous produits par catégorie (ou par default tous les produits du site)
 if(isset($_GET['categorie']) && $_GET['categorie'] != ''){
 	$resultat = $pdo -> prepare("SELECT * FROM salle WHERE categorie = :categorie");
