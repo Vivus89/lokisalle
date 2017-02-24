@@ -42,12 +42,12 @@ if($_POST){
 	// Depuis SQL 5.7, dans une requête REPLACE on ne peux plus mettre la clé primaire vide ou NULL. ON doit donc faire une requête pour l'ajout et une requete pour la modif. d'où le if/else ci-desous.
 
 	if(isset($_GET['action']) && $_GET['action'] == 'modifier'){
-		$resultat = $pdo -> prepare("REPLACE INTO produit (id_produit, date_arrivee , date_depart, id_salle, prix, etat) VALUES (:id_produit, :date_arrivee, :date_depart, :id_salle, :prix, :etat)");
+		$resultat = $pdo -> prepare("REPLACE INTO produit (id_produit, date_arrivee , date_depart, id_salle, prix) VALUES (:id_produit, :date_arrivee, :date_depart, :id_salle, :prix)");
 
 		$resultat -> bindParam(':id_produit', $_POST['id_produit'], PDO::PARAM_INT);
 	}
 	else{
-		$resultat = $pdo -> prepare("INSERT INTO produit ( date_arrivee , date_depart, id_salle, prix, etat) VALUES (:date_arrivee, :date_depart, :id_salle, :prix, :etat)");
+		$resultat = $pdo -> prepare("INSERT INTO produit ( date_arrivee , date_depart, id_salle, prix) VALUES (:date_arrivee, :date_depart, :id_salle, :prix)");
 	}// !!!!!!! FERMETURE DU ELSE !!!!!!!!
 if(!empty($_POST['date_arrivee'])) {
 	$date = new DateTime($_POST['date_arrivee']);
@@ -64,7 +64,6 @@ if(!empty($_POST['date_depart'])) {
 	$resultat -> bindParam(':date_depart', $date1, PDO::PARAM_STR);
 	$resultat -> bindParam(':id_salle', $_POST['salle'], PDO::PARAM_INT);
 	$resultat -> bindParam(':prix', $_POST['prix'], PDO::PARAM_INT);
-	$resultat -> bindParam(':etat', $_POST['etat'], PDO::PARAM_STR);
 
 
 	if($resultat -> execute()){
@@ -94,7 +93,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'supprimer'){ // SI une action d
 			$produit = $resultat -> fetch(PDO::FETCH_ASSOC);
 
 			// Pour pouvoir supprimer une photo, il nous faut son chemin absolu, que l'on reconstitue depuis la racine du serveur ci-dessous:
-			$chemin_de_la_photo_a_supprimer = $_SERVER['DOCUMENT_ROOT'] . RACINE_SITE . 'photo/' . $salle['photo'];
+			$chemin_de_la_photo_a_supprimer = $_SERVER['DOCUMENT_ROOT'] . RACINE_SITE . 'photo/' . $produit['photo'];
 
 			// Dernieres vérifs : Si le fichier existe et que ce n'est pas la photo par défault, alors la fonction unlink() supprime le fichier.
 			if(file_exists($chemin_de_la_photo_a_supprimer) && $produit['photo'] != 'default.jpg'){
@@ -155,8 +154,8 @@ require_once('../inc/header.inc.php');
 <h1>Gestion des Produits </h1>
 <ul>
 	<!-- Les deux liens ci-dessous (sous-menu) permettent de lancer 2 actions : Affichage de tous les produits et Affichage du formulaire d'ajout de produit. -->
-	<li><a href="?action=affichage">Afficher les salles</a></li>
-	<li><a href="?action=ajout">Ajouter une salle</a></li>
+	<li><a href="?action=affichage">Afficher les produits</a></li>
+	<li><a href="?action=ajout">Ajouter un produit</a></li>
 </ul><hr/>
 <?= $msg ?>
 <?= $contenu ?>
@@ -182,7 +181,6 @@ $date_arrivee = (isset($produit_actuel)) ? $produit_actuel['date_arrivee'] : '';
 $date_depart = (isset($produit_actuel)) ? $produit_actuel['date_depart'] : '';
 $id_produit = (isset($produit_actuel)) ? $produit_actuel['id_produit'] : '';
 $prix = (isset($produit_actuel)) ? $produit_actuel['prix'] : '';
-$etat = (isset($produit_actuel)) ? $produit_actuel['etat'] : '';
 
 
 
@@ -231,11 +229,11 @@ $id_salle = (isset($produit_actuel)) ? $produit_actuel['id_salle'] : '';
 <label> Salle: </label>
 <select name="salle" class="form-control">
 <?php
-$resultat = $pdo->query('SELECT * FROM salle');
-while ($salle = $resultat->fetch())
+$resultat = $pdo->query('SELECT * FROM produit');
+while ($produit = $resultat->fetch())
 {
 ?>
-           <option value=" <?php echo $salle['id_salle']; ?>"> <?php echo $salle['id_salle']; ?></option>
+           <option value=" <?php echo $produit['id_produit']; ?>"> <?php echo $produit['id_produit']; ?></option>
            <?php
            }
 
@@ -264,15 +262,7 @@ while ($salle = $resultat->fetch())
 <br/>
 <br/>
 
-<div class="form-group">
-	<div class="col-sm-offset-3 col-sm-4">
-<label>etat: </label>
-<select name="etat" class="form-control">
-	<option>-- Selectionnez --</option>
-	<option <?= ($etat == 'libre') ? 'selected' : '' ?> value="libre">libre</option>
-	<option <?= ($etat == 'occupation') ? 'selected' : '' ?> value="occupation">occupation</option>
 
-</select>
 </div>
 </div>
 <br/>
@@ -286,6 +276,7 @@ while ($salle = $resultat->fetch())
 <?php endif;?>
 
 <?php
+$page = 'Gestion Produit';
 require_once('../inc/footer.inc.php');
 ?>
 

@@ -3,8 +3,11 @@ require_once('inc/init.inc.php');
 
 
 // traitement pour récupérer toutes les catégories
-$resultat = $pdo -> query("SELECT * FROM salle");
-$categorie = $resultat -> fetchAll(PDO::FETCH_ASSOC);
+/*$resultat = $pdo -> query("SELECT * FROM salle");
+$liste_villes_produits = $resultat -> fetchAll(PDO::FETCH_ASSOC);
+*/
+$resultat = $pdo -> query("SELECT DISTINCT categorie FROM salle");
+$liste_categories_produits = $resultat -> fetchAll(PDO::FETCH_ASSOC);
 // Grâce à fetchAll(), $categorie est un array multidimentionnel avec les infos de chaque categorie. A l'indice categorie, je trouve le nom de ma categorie.
 
 // debug($categorie);
@@ -88,7 +91,7 @@ require_once('inc/header.inc.php');
 
 ?>
 
-<!-- ------------------------------------------------------------------------- -->
+<!-- ***************************************************************************************		 -->
 
   <!-- Page Content -->
     <div class="container">
@@ -97,14 +100,14 @@ require_once('inc/header.inc.php');
     	
 			<ul>
 			<h2>Catégories</h2>
-				<?php foreach($categorie as $valeur) : ?>
+				<?php foreach($liste_categories_produits as $valeur) : ?>
 				<li><a href="?categorie=<?= $valeur['categorie'] ?>"><?= $valeur['categorie'] ?></a></li>
 				<!-- href="boutique.php?categorie=nom_de_la_categorie" -->
 				<?php endforeach; ?>
 			</ul>
 			<ul>
 				<h2>Villes</h2>
-				<?php foreach($categorie as $valeur) : ?>
+				<?php foreach($ville as $valeur) : ?>
 				<li><a href="?ville=<?= $valeur['ville'] ?>"><?= $valeur['ville'] ?></a></li>
 				<!-- href="boutique.php?categorie=nom_de_la_categorie" -->
 				<?php endforeach; ?>
@@ -167,14 +170,14 @@ require_once('inc/header.inc.php');
                             </ol>
 
                             <div class="carousel-inner">
-                            <?php
-                            $counter = 1;
+                            	<?php
+                            	$counter = 1;
 								$resultat = $pdo->query('SELECT * FROM salle');
 								while ($salle = $resultat->fetch())
 								{
-									?>
+								?>
                                 <div class="item <?php if($counter <= 1){echo " active"; } ?>">
-                                    <img class="slide-image" src="<?= RACINE_SITE ?>photo/<?= $salle['photo'] ?>" alt="">
+                                    <img class="slide-image" src="<?= RACINE_SITE ?>photo/<?= $salle['photo'] ?>" alt="" style="width: 800px height: 300;" 	;>
                                 </div>
                                 <?php
 								    $counter++;
@@ -196,13 +199,12 @@ require_once('inc/header.inc.php');
                 </div>
 
                 <div class="row">
-<?php foreach($produits as $valeur) : ?>
+				<?php foreach($produits as $valeur) : ?>
                     <div class="col-sm-4 col-lg-4 col-md-4">
-
                         <div class="thumbnail">
                             <img src="<?= RACINE_SITE ?>photo/<?= $valeur['photo'] ?>" alt="">
                             <div class="caption">
-                                <h4 class="pull-right"><?= $valeur['prix'] ?></h4>
+                                <h4 class="pull-right"></h4>
                                 <h4><a href="#"><?= $valeur['titre'] ?></a>
                                 </h4>
                                 <p><?= substr($valeur['description'], 0, 40) ?>...</p>

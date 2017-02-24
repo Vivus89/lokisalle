@@ -102,7 +102,7 @@ $page = 'Gestion Membres';
 require_once('../inc/header.inc.php');
 ?>
 
-<h1>Gestion de la boutique</h1>
+<h1>Gestion Membres</h1>
 <ul>
 	<li><a href="?action=affichage">Afficher les membres</a></li>
 	<li><a href="?action=ajout">Ajouter un membre</a></li>

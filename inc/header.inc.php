@@ -1,7 +1,7 @@
 <!Doctype html>
 <html>
     <head>
-        <title>Lokisalle - <?= $page ==  'Accueil'?></title>
+        <title>Lokisalle - <?= $page == 'Accueil'?></title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="<?= RACINE_SITE ?>bootstrap/css/bootstrap.css" rel="stylesheet"/>
@@ -15,7 +15,7 @@
 				<span>
 					<a href="" title="Lokisalle">Lokisalle</a>
                 </span>
-				<nav class="navbar navbar-default">
+				<nav class="nav nav-pills nav-justified">
           <div class="container-fluid">
 				<?php if(userConnecte()):?>
 					<a <?= ($page == 'Accueil') ? 'class="active"' : '' ?> href="<?= RACINE_SITE ?>index.php">Accueil</a>

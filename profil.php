@@ -20,9 +20,7 @@ require_once('inc/header.inc.php');
 <div class="profil">
 	<p>Bonjour <?= $pseudo?> !</p><br/>
 	
-	<div class="profil_img">
-		<img src="img/default.png"/>
-	</div>
+	
 	<div class="profil_infos">
 		<ul>
 			<li>Pseudo : <b><?= $pseudo ?></b></li>
