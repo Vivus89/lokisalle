@@ -41,12 +41,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'incrementation') {
 			$produit = $resultat -> fetch(PDO::FETCH_ASSOC);
 
 			debug($produit);
-			
+
 			$position = array_search($_GET['id_produit'], $_SESSION['reservation']['id_produit']);
 			if ($position !== FALSE) {
-				if ($produit['stock'] >= $_SESSION['reservation']['quantite'][$position] +1 ){
+				if ($produit['stock'] >= $_SESSION['reservation']['date_arrivee'][$position] +1 ){
 					$_SESSION['reservation']['quantite'][$position] ++;
-					header('location:reservation.php');
+					header('location:panier.php');
 				}
 				else{// Si le stock dispo n'est pas supérieur a la quantité actuelle dans le reservation , plus une unitée, on préviens que le stock est limité et donc on n'incrémente pas.
 					$msg .= '<div class="erreur">Le stock du produit' . $_SESSION['reservation']['titre'][$position] . ' est limité ! </div>';
@@ -65,14 +65,14 @@ if (isset($_GET['action']) && $_GET['action'] == 'decrementation') {
 		$position = array_search($_GET['id_produit'], $_SESSION['reservation']['id_produit']);
 
 		if ($position !== FALSE) {
-			if ($_SESSION['reservation']['quantite'][$position] > 1) {
+			if ($_SESSION['reservation']['date_arrivee'][$position] > 1) {
 				//Si le produit existe dans le reservation, et que sa quantité est supérieure a 1, je peux retirer une unité
 
-				$_SESSION['reservation']['quantite'][$position] --;
+				$_SESSION['reservation']['date_arrivee'][$position] --;
 			}
 			else{//Si sa quantité est inférieure a 1 dans ce cas, je supprime tout simplement la ligne.
 				retirerProduit($_GET['id_produit']);
-				header('location:reservation.php');
+				header('location:panier.php');
 			}
 		}
 	}
@@ -84,21 +84,21 @@ if (isset($_GET['action']) && $_GET['action'] == 'decrementation') {
 		//Le stock est nul : Retire le produit
 	//Enregistrer dans la BDD les infos de la commande,pour  chaque commande on modifie le stock et on enregistre les infos dans details commande.
 	//Envoyer un email de confirmation a nos clients $_SESSION ['membre']['email']
-	
+
 	if(isset($_POST['paiement']) && !empty($_SESSION['reservation']['id_produit'])){
-		for ($i=0; $i < sizeof ($_SESSION['reservation']['id_produit']) ; $i++) { 
+		for ($i=0; $i < sizeof ($_SESSION['reservation']['id_produit']) ; $i++) {
 			$id_produit = $_SESSION['reservation']['id_produit'][$i];
 			$resultat = $pdo -> query("SELECT stock FROM produit WHERE id_produit = $id_produit ");
 
 			$produit = $resultat -> fetch(PDO::FETCH_ASSOC);
-			
+
 
 			if($produit['stock'] < $_SESSION['reservation']['quantite'][$i]){
 				$msg .='<div class="erreur">' . $_SESSION['reservation']['titre'][$i] . ': stock restant :' . $produit['stock'] . 'Quantité demandée :' . $_SESSION['reservation']['quantite'][$i] . '</div>';
 
 			if ($produit['stock'] > 0) {
 				$msg .= '<div class="erreur">Le stock du produit' . $_SESSION['reservation']['titre'][$i] . 'n\'est pas suffisant, votre commande a été modifié. Veuillez vérifier la nouvelle quantité avant de valider ! </div>';
-			$_SESSION['reservation']['quantite'][$i] = $produit['stock'];
+			$_SESSION['reservation']['date_arrivee'][$i] = $produit['stock'];
 			}
 			else{
 				$msg .= '<div class="erreur">Le produit ' . $_SESSION['reservation']['titre'][$i] . 'n\'est plus disponible . Nous avons supprimé ce produit de votre commande. </div>';
@@ -123,17 +123,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'decrementation') {
 
 		//Modification des stocks dans la table produit et enregistrement dans la table details_commande (boucle car opération a effectuer pour chaque reservation)
 
-		for ($i = 0; $i < sizeof($_SESSION['reservation']['id_produit']) ; $i++) { 
+		for ($i = 0; $i < sizeof($_SESSION['reservation']['id_produit']) ; $i++) {
 
 			$id_produit = $_SESSION['reservation']['id_produit'][$i];
-			$quantite = $_SESSION['reservation']['quantite'][$i];
+			$date_arrivee = $_SESSION['reservation']['date_arrivee'][$i];
 			$prix= $_SESSION['reservation']['prix'][$i];
 
 			// enregistrement des details
 			$resultat = $pdo -> exec("INSERT INTO details_commande (id_commande, id_produit, quantite, prix) VALUES ('$id_commande', '$id_produit', '$quantite', '$prix') ");
 
 			//modification du stock
-			$resultat = $pdo -> exec("UPDATE produit set stock = (stock - $quantite) ");
+			$resultat = $pdo -> exec("UPDATE produit set stock = (stock - $date_arrivee) ");
 		}
 
 		unset($_SESSION['reservation']);
@@ -147,19 +147,20 @@ if (isset($_GET['action']) && $_GET['action'] == 'decrementation') {
 <?= $msg ?>
 <table border="1" style="border-collapse: collapse; cellpadding: 7;">
 	<tr>
-		<th colspan="6">reservation <?= (quantitereservation()) ? quantitereservation() . ' Produit(s) dans le reservation ' : ''?></th>
+		<th colspan="7">reservation <?= (quantiteReservation()) ? quantiteReservation() . ' Produit(s) dans le reservation ' : ''?></th>
 	</tr>
 	<tr>
 		<th>Photo</th>
 		<th>Titre</th>
-		<th>Quantite</th>
+		<th>date_arrivee</th>
+		<th>date_depart</th>
 		<th>Prix unitaire</th>
 		<th>Total</th>
 		<th>Supprimer</th>
 	</tr>
 	<?php if(empty($_SESSION['reservation']['id_produit'])) : ?>
 	<tr>
-		<td colspan="6">Votre reservation est vide</td>
+		<td colspan="7">Votre reservation est vide</td>
 	</tr>
 	<?php else : ?>
 		<?php for($i = 0; $i < count($_SESSION['reservation']['id_produit']); $i++) : ?>
@@ -168,7 +169,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'decrementation') {
 				<td><?= $_SESSION ['reservation']['titre'][$i] ?></td>
 				<td>
 				<a href="?action=decrementation&id_produit=<?= $_SESSION['reservation']['id_produit'][$i] ?>"><img src="img/moins.png" width="15"></a>
-				
+
 				<span style="padding: 3px; border: solid 1px black; text-align: center; width: 20px; display: inline-block;">
 				<?= $_SESSION ['reservation']['quantite'][$i] ?>
 				</span>
@@ -180,7 +181,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'decrementation') {
 				<td>
 					<a href="?action=supprimer&id_produit=<?= $_SESSION['reservation']['id_produit'][$i] ?>"><img src="img/delete.png" height="22" /></a>
 				</td>
-				
+
 			</tr>
 
 	<?php endfor; ?>
@@ -196,7 +197,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'decrementation') {
 			<input type="hidden" name="montant" value="<?= montantTotal() ?>"/>
 
 			<input type="submit" value="payer" name="paiement"/>
-				
+
 			</form>
 		</td>
 		<!-- sinon btn connexion -->

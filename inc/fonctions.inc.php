@@ -3,13 +3,13 @@
 // Fonction Debug (amélioration du print_r())
 function debug($arg){
 	echo '<div style="color: white; font-weight: bold; padding: 10px; background:#' . rand(111111, 999999) . '">';
-	$trace = debug_backtrace(); // debug_backtrace me retourne des infos sur l'emplacement où est EXECUTER cette fonction. Nous retourne un array multidimentionnel. 
+	$trace = debug_backtrace(); // debug_backtrace me retourne des infos sur l'emplacement où est EXECUTER cette fonction. Nous retourne un array multidimentionnel.
 	echo 'Le debug a été demandé dans le fichier : ' . $trace[0]['file'] . ' à la ligne : ' . $trace[0]['line'] . '<hr/>';
 
 	echo '<pre>';
 	print_r($arg);
 	echo '</pre>';
-	
+
 	echo '</div>';
 }
 
@@ -21,7 +21,7 @@ function userConnecte(){
 	else{
 		return FALSE;
 	}
-	// S'il existe une session/membre, c'est que l'utilisateur est connecté. Je retourne TRUE, sinon, je retourne ELSE. 
+	// S'il existe une session/membre, c'est que l'utilisateur est connecté. Je retourne TRUE, sinon, je retourne ELSE.
 }
 
 // Fonction pour voir si l'utilisteur est admin
@@ -32,91 +32,86 @@ function userAdmin(){
 	else{
 		return FALSE;
 	}
-	// Si l'utilisateur est connecté et que son statut c'est "1" alors je retourne TRUE. Sinon je retourne FALSE. 
+	// Si l'utilisateur est connecté et que son statut c'est "1" alors je retourne TRUE. Sinon je retourne FALSE.
 }
 
 // Fonction pour créer un panier
 
-function creationPanier(){
-	if(!isset($_SESSION['panier'])){
-		$_SESSION['panier'] = array();
-		$_SESSION['panier']['id_produit'] = array(); 
-		$_SESSION['panier']['quantite'] = array(); 
-		$_SESSION['panier']['photo'] = array(); 
-		$_SESSION['panier']['titre'] = array(); 
-		$_SESSION['panier']['prix'] = array(); 
+function creationReservation(){
+	if(!isset($_SESSION['reservation'])){
+		$_SESSION['reservation'] = array();
+		$_SESSION['reservation']['id_produit'] = array();
+		$_SESSION['reservation']['date_arrivee'] = array();
+		$_SESSION['reservation']['date_depart'] = array();
+		$_SESSION['reservation']['photo'] = array();
+		$_SESSION['reservation']['titre'] = array();
+		$_SESSION['reservation']['prix'] = array();
 	}
 	return true;
 }
 
 // Fonction pour ajouter un produit au panier
-function ajouterProduit($id_produit, $quantite, $titre, $photo, $prix){
-	creationPanier();
-	
-	// Nous devons vérifier que le produit en cours d'ajout n'éxiste pas déjà dans notre panier : 
-	$positionPdt = array_search($id_produit, $_SESSION['panier']['id_produit']);
-	//array_seach est une fonction qui me permet de chercher une info dans un array. Si elle trouve, elle me retourne son emplacement sinon, elle me retourne FALSE. 
-	
+function ajouterProduit($id_produit, $date_arrivee, $date_depart, $titre, $photo, $prix){
+	creationReservation();
+
+	// Nous devons vérifier que le produit en cours d'ajout n'éxiste pas déjà dans notre panier :
+	$positionPdt = array_search($id_produit, $_SESSION['reservation']['id_produit']);
+	//array_seach est une fonction qui me permet de chercher une info dans un array. Si elle trouve, elle me retourne son emplacement sinon, elle me retourne FALSE.
+
 	if($positionPdt !== FALSE){
-		$_SESSION['panier']['quantite'][$positionPdt] += $quantite;
+		$_SESSION['reservation']['date_arrivee'][$positionPdt] += $date_arrivee;
 	}
 	else {
-		$_SESSION['panier']['quantite'][] = $quantite;
-		$_SESSION['panier']['id_produit'][] = $id_produit;
-		$_SESSION['panier']['photo'][] = $photo;
-		$_SESSION['panier']['titre'][] = $titre;
-		$_SESSION['panier']['prix'][] = $prix;
+		$_SESSION['reservation']['date_arrivee'][] = $date_arrivee;
+		$_SESSION['reservation']['id_produit'][] = $id_produit;
+		$_SESSION['reservation']['photo'][] = $photo;
+		$_SESSION['reservation']['titre'][] = $titre;
+		$_SESSION['reservation']['prix'][] = $prix;
+		$_SESSION['reservation']['date_depart']= $date_depart;
 	}
 }
 
 // Fonction pour calculer le nombre de produit dans le panier
 
-function quantitePanier(){
-	$quantite = 0; 
-	if(isset($_SESSION['panier']) && !empty($_SESSION['panier']['quantite'])){
-		for($i = 0; $i < count($_SESSION['panier']['quantite']); $i++){
-			$quantite += $_SESSION['panier']['quantite'][$i];
+function quantiteReservation(){
+	$date_arrivee = 0;
+	if(isset($_SESSION['reservation']) && !empty($_SESSION['reservation']['date_arrivee'])){
+		for($i = 0; $i < count($_SESSION['reservation']['date_arrivee']); $i++){
+			$date_arrivee += $_SESSION['reservation']['date_arrivee'][$i];
 		}
 	}
-	if($quantite != 0){
-		return $quantite;
+	if($date_arrivee != 0){
+		return $date_arrivee;
 	}
 }
 
-// Fonction pour calculer le montant total d'un panier 
+// Fonction pour calculer le montant total d'un panier
 function montantTotal(){
-	$total = 0; 
-	
-	if(isset($_SESSION['panier']) && !empty($_SESSION['panier']['prix'])){
-		for($i=0; $i < count($_SESSION['panier']['prix']); $i++){
-			$total += $_SESSION['panier']['prix'][$i] * $_SESSION['panier']['quantite'][$i];	
+	$total = 0;
+
+	if(isset($_SESSION['reservation']) && !empty($_SESSION['reservation']['prix'])){
+		for($i=0; $i < count($_SESSION['reservation']['prix']); $i++){
+			$total += $_SESSION['reservation']['prix'][$i] * $_SESSION['reservation']['date_arrivee'][$i];
 		}
 	}
-	
+
 	if($total != 0){
 		return $total;
 	}
 }
 
-// Fonction pour retirer un produit du tableau : 
-function retirerProduit($id_produit){
-	
-	$position_pdt_a_supprimer = array_search($id_produit, $_SESSION['panier']['id_produit']);
-	// Je cherche la position du produit à supprimer grâce à son id dans la liste de tous les id des produit du panier. 
-	
+// Fonction pour retirer un produit du tableau :
+function retirerReservation($id_produit){
+
+	$position_pdt_a_supprimer = array_search($id_produit, $_SESSION['reservation']['id_produit']);
+	// Je cherche la position du produit à supprimer grâce à son id dans la liste de tous les id des produit du reservation.
+
 	if($position_pdt_a_supprimer !== FALSE){
-		array_splice($_SESSION['panier']['id_produit'], $position_pdt_a_supprimer, 1);
-		array_splice($_SESSION['panier']['prix'], $position_pdt_a_supprimer, 1);
-		array_splice($_SESSION['panier']['quantite'], $position_pdt_a_supprimer, 1);
-		array_splice($_SESSION['panier']['titre'], $position_pdt_a_supprimer, 1);
-		array_splice($_SESSION['panier']['photo'], $position_pdt_a_supprimer, 1);
+		array_splice($_SESSION['reservation']['id_produit'], $position_pdt_a_supprimer, 1);
+		array_splice($_SESSION['reservation']['prix'], $position_pdt_a_supprimer, 1);
+		array_splice($_SESSION['reservation']['date_arrivee'], $position_pdt_a_supprimer, 1);
+		array_splice($_SESSION['reservation']['date_depart'], $position_pdt_a_supprimer, 1);
+		array_splice($_SESSION['reservation']['titre'], $position_pdt_a_supprimer, 1);
+		array_splice($_SESSION['reservation']['photo'], $position_pdt_a_supprimer, 1);
 	}
 }
-
-
-
-
-
-
-
-
