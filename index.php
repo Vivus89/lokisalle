@@ -12,14 +12,14 @@ $categorie = $resultat -> fetchAll(PDO::FETCH_ASSOC);
 $resultat = $pdo -> query("SELECT DISTINCT ville FROM salle"); 
 $ville = $resultat -> fetchAll(PDO::FETCH_ASSOC); 
 
-//$req = $pdo -> query(
-//"SELECT * FROM salle 
-//LEFT JOIN produit 
-//ON salle.id_salle = produit.id_salle"
-//);
- //$resultat = $req ;
- // $produits = $resultat -> fetchAll(PDO::FETCH_ASSOC);
-
+$req = $pdo -> query(
+"SELECT * FROM salle 
+LEFT JOIN produit 
+ON salle.id_salle = produit.id_salle"
+);
+$resultat = $req ;
+ $produits = $resultat -> fetchAll(PDO::FETCH_ASSOC);
+debug($produits); 
 // Traitement pour récupérer tous produits par catégorie (ou par default tous les produits du site)
 if(isset($_GET['categorie']) && $_GET['categorie'] != ''){
 	$resultat = $pdo -> prepare("SELECT * FROM salle WHERE categorie = :categorie");
@@ -47,38 +47,99 @@ $page="Accueil";
 require_once('inc/header.inc.php');
 
 ?>
-<h1>Accueil</h1>
-<div class="boutique-gauche">
-	<ul>
-	<h1>Catégorie</h1>
-		<?php foreach($categorie as $valeur) : ?>
-		<li><a href="?categorie=<?= $valeur['categorie'] ?>"><?= $valeur['categorie'] ?></a></li>
-		<!-- href="boutique.php?categorie=nom_de_la_categorie" -->
-		<?php endforeach; ?>
-	</ul>
-	<ul>
-	<h1>Ville</h1>
-		<?php foreach($ville as $valeur) : ?>
-		<li><a href="?ville=<?= $valeur['ville'] ?>"><?= $valeur['ville'] ?></a></li>
-		<!-- href="boutique.php?categorie=nom_de_la_categorie" -->
-		<?php endforeach; ?>
-	</ul>
-</div>
-<div class="boutique-droite">
-	
-	<?php foreach($produits as $valeur) : ?>
-	<div class="boutique-produit">
-		<h3><?= $valeur['titre'] ?></h3>
-		<a href="fiche_produit.php?id_produit=<?= $valeur['id_salle'] ?>"><img src="<?= RACINE_SITE ?>photo/<?= $valeur['photo'] ?>" height="100" /></a>
-		<p style="font-weight: bold; font-size:20px;"><?= $valeur['categorie'] ?></p>
-		<p style="height: 40px"><?= substr($valeur['description'], 0, 40) ?>...</p><br/>
-		<a style="padding: 5px 15px; background: red; color: white; text-align: center; border: 2px solid black; border-radius: 3px" href="fiche_produit.php?id_produit=<?= $valeur['id_salle'] ?>">Voir la fiche</a>
-		<!-- fiche_produit.php?id_produit=54 -->
-	</div>
-	<?php endforeach; ?>
-	
-</div>
 
+
+//-----------------------------------------------------------------------------
+
+  <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-3">
+                <p class="lead">Shop Name</p>
+                <?php foreach($categorie as $valeur) : ?>
+                <div class="list-group">
+                    <a href="?categorie=<?= $valeur['categorie'] ?>" class="list-group-item"><?= $valeur['categorie'] ?></a>
+                    
+                </div>
+            </div>
+            <?php endforeach; ?>
+            <div class="col-md-9">
+
+                <div class="row carousel-holder">
+
+                    <div class="col-md-12">
+                    
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                            </ol>
+                            
+                            <div class="carousel-inner">
+                            <?php
+                            $counter = 1;
+								$resultat = $pdo->query('SELECT * FROM salle');
+								while ($salle = $resultat->fetch())
+								{
+									?>
+                                <div class="item <?php if($counter <= 1){echo " active"; } ?>">
+                                    <img class="slide-image" src="<?= RACINE_SITE ?>photo/<?= $salle['photo'] ?>" alt="">
+                                </div>
+                                <?php
+								    $counter++;
+								    }
+								   
+								?>  
+                            </div>
+                      
+                            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
+                        </div>
+                        
+                    </div>
+
+                </div>
+<?php foreach($produits as $valeur) : ?>
+                <div class="row">
+
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                    
+                        <div class="thumbnail">
+                            <img src="<?= RACINE_SITE ?>photo/<?= $valeur['photo'] ?>" alt="">
+                            <div class="caption">
+                                <h4 class="pull-right"><?= $valeur['prix'] ?></h4>
+                                <h4><a href="#"><?= $valeur['titre'] ?></a>
+                                </h4>
+                                <p><?= substr($valeur['description'], 0, 40) ?>...</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">15 reviews</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                </p>
+                            </div>
+                        </div>
+                    
+                    </div>
+
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+        </div>
+
+    </div>
 
 
 
