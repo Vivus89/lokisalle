@@ -12,13 +12,49 @@ $categorie = $resultat -> fetchAll(PDO::FETCH_ASSOC);
 $resultat = $pdo -> query("SELECT DISTINCT ville FROM salle");
 $ville = $resultat -> fetchAll(PDO::FETCH_ASSOC);
 
-$req = $pdo -> query(
-"SELECT * FROM salle
-LEFT JOIN produit
-ON salle.id_salle = produit.id_salle"
-);
-$resultat = $req ;
- $produits = $resultat -> fetchAll(PDO::FETCH_ASSOC);
+$req = $pdo -> query("SELECT *
+  FROM produit
+  LEFT JOIN salle
+  ON salle.id_salle = produit.id_salle ");
+
+  if(isset($_GET['action']) && $_GET['action'] == 'reunion'){
+    $req = $pdo -> query("SELECT *
+		FROM produit p, salle s
+		WHERE p.id_salle = s.id_salle
+		AND categorie = 'Réunion'");
+  }
+
+  if(isset($_GET['action']) && $_GET['action'] == 'bureau'){
+    $req = $pdo -> query("SELECT *
+		FROM produit p, salle s
+		WHERE p.id_salle = s.id_salle
+		AND categorie = 'Bureau'");
+  }
+
+  if(isset($_GET['action']) && $_GET['action'] == 'paris'){
+    $req = $pdo -> query("SELECT *
+    FROM produit p, salle s
+    WHERE p.id_salle = s.id_salle
+    AND ville = 'Paris'");
+  }
+
+  if(isset($_GET['action']) && $_GET['action'] == 'lyon'){
+    $req = $pdo -> query("SELECT *
+    FROM produit p, salle s
+    WHERE p.id_salle = s.id_salle
+    AND ville = 'Lyon'");
+  }
+
+  if(isset($_GET['action']) && $_GET['action'] == 'bordeaux'){
+    $req = $pdo -> query("SELECT *
+    FROM produit p, salle s
+    WHERE p.id_salle = s.id_salle
+    AND ville = 'Bordeaux'");
+  }
+
+  $resultat = $req ;
+  $produits = $resultat -> fetchAll(PDO::FETCH_ASSOC);
+
 
 // Traitement pour récupérer tous produits par catégorie (ou par default tous les produits du site)
 if(isset($_GET['categorie']) && $_GET['categorie'] != ''){
@@ -57,16 +93,34 @@ require_once('inc/header.inc.php');
   <!-- Page Content -->
     <div class="container">
 
-        <div class="row">
+            <div class="col-md-3">
+    	
+			<ul>
+			<h2>Catégories</h2>
+				<?php foreach($categorie as $valeur) : ?>
+				<li><a href="?categorie=<?= $valeur['categorie'] ?>"><?= $valeur['categorie'] ?></a></li>
+				<!-- href="boutique.php?categorie=nom_de_la_categorie" -->
+				<?php endforeach; ?>
+			</ul>
+			<ul>
+				<h2>Villes</h2>
+				<?php foreach($categorie as $valeur) : ?>
+				<li><a href="?ville=<?= $valeur['ville'] ?>"><?= $valeur['ville'] ?></a></li>
+				<!-- href="boutique.php?categorie=nom_de_la_categorie" -->
+				<?php endforeach; ?>
+			</ul>
+		</div>	
+
+
+      <!--  <div class="row">
 
             <div class="col-md-3">
                 <p class="lead">Shop Name</p>
 
                 <div class="list-group">
                   <?php
-                  $resultat = $pdo->query('SELECT * FROM salle');
+                  /*$resultat = $pdo->query('SELECT * FROM salle');
                   foreach ($resultat as $valeur)
-
 
                   {
                   ?>
@@ -81,13 +135,14 @@ require_once('inc/header.inc.php');
                     foreach ($resultat as $valeur)
 
 
+
                     {
                     ?>
                       <a href="?ville=<?= $valeur['ville'] ?>" class="list-group-item"><?= $valeur['ville'] ?></a>
 
                       <?php
                       }
-
+*/
                       ?>
 
                 </div>
@@ -95,7 +150,7 @@ require_once('inc/header.inc.php');
 
 
             </div>
-          </div>
+          </div> -->
 
 
             <div class="col-md-9">

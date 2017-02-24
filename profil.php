@@ -30,8 +30,6 @@ require_once('inc/header.inc.php');
 			<li>Nom: <b><?= $nom ?></b></li>
 		</ul>
 	</div>
-	<div class="profil_adresse">
-	</div>
 </div>
 
 
